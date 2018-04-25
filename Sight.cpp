@@ -4,7 +4,7 @@ Sight::Sight(double x, double y, QString name)
 {
     this->x=x;
     this->y=y;
-    thos->name=name;
+    this->name=name;
 }
 double Sight::getX()
 {

@@ -1,6 +1,6 @@
 #ifndef SIGHT_H
 #define SIGHT_H
-
+#include <QString>
 
 class Sight
 {

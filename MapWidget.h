@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QtGui>
-#include <QWebEngineView>
+#include <QtWebEngineWidgets/QWebEngineView>
 
 class MapWidget:public QWebEngineView
 {

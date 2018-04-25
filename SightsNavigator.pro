@@ -26,3 +26,5 @@ FORMS    += MainWindow.ui
 
 RESOURCES += \
     MapPage.qrc
+
+DISTFILES +=
