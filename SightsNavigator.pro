@@ -15,10 +15,12 @@ TEMPLATE = app
 SOURCES +=\
         MainWindow.cpp \
     MapWidget.cpp \
-    Main.cpp
+    Main.cpp \
+    Sight.cpp
 
 HEADERS  += MainWindow.h \
-    MapWidget.h
+    MapWidget.h \
+    Sight.h
 
 FORMS    += MainWindow.ui
 
