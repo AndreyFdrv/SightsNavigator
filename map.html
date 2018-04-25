@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0,userscalable=no" />
+    <style type="text/css">
+        html { height: 100% }
+        body { height: 100%; margin: 0; padding: 0 }
+        #map-canvas { height: 100% }
+    </style>
+    <script type="text/javascript"
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NzY1Yeij6JnQOmsYYeB5EDBudUY_4mE & libraries=drawing">
+    </script>
+    <script type="text/javascript">
+        var map;
+        function initialize()
+        {
+            // Add map
+            var mapOptions =
+            {
+                center: new google.maps.LatLng(59.935618, 30.324633),
+                zoom: 11
+            };
+            map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+            // Add marker
+            var marker = new google.maps.Marker(
+            {
+                position: new google.maps.LatLng(59.934410, 30.324564),
+                map: map,
+                title: "Казанский собор",
+            });
+            google.maps.event.addListener(marker, 'click', function()
+            {
+                map.panTo(marker.getPosition());
+            });
+            marker.setMap(map);
+            // Setup drawing manager
+            var drawingManager = new
+            google.maps.drawing.DrawingManager();
+            drawingManager.setMap(map);
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</head>
+<body ondragstart="return false">
+    <div id="map-canvas" />
+</body>
+</html>

@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-QT += webenginewidgets
+QT       += core gui webengine webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,3 +21,6 @@ HEADERS  += MainWindow.h \
     MapWidget.h
 
 FORMS    += MainWindow.ui
+
+RESOURCES += \
+    MapPage.qrc
