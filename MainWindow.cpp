@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sights.append(new Sight(59.936442, 30.302236, "Медный всадник"));
     sights.appned(new Sight(59.934179, 30.306102, "Исакиевский собор"));
     sights.appned(new Sight(59.940213, 30.328921, "Спас на Крови"));
-    sights.append(new Sight(59.950137, 30.316697, "Пестропавловская крепость"));
+    sights.append(new Sight(59.950137, 30.316697, "Петропавловская крепость"));
 }
 
 MainWindow::~MainWindow()
