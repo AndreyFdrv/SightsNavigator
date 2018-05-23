@@ -3,9 +3,9 @@
 #include "MapWidget.h"
 MapWidget::MapWidget(QWidget *parent): QWebEngineView(parent)
 {
-    multigraph.AddVertex("1");
-    multigraph.AddVertex("2");
-    multigraph.AddEdge("1", "2", 20, 0, "Пешком");
+    sightsMultigraph.AddVertex("1");
+    sightsMultigraph.AddVertex("2");
+    sightsMultigraph.AddEdge("1", "2", 20, 0, "Пешком");
     //Вектор sights должен возвращаться мультиграфом, который ещё не реализован
     Sights = new QVector<Sight *>();
     Sights->append(new Sight(59.934410, 30.324564, "Казанский собор"));

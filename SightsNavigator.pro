@@ -17,11 +17,12 @@ SOURCES +=\
     MapWidget.cpp \
     Main.cpp \
     Sight.cpp \
-    Multigraph.cpp
+    SightsMultigraph.cpp
 
 HEADERS  += MainWindow.h \
     MapWidget.h \
     Sight.h \
+    SightsMultigraph.h \
     Multigraph.h
 
 FORMS    += MainWindow.ui
