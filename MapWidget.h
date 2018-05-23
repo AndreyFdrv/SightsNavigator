@@ -5,12 +5,14 @@
 #include <QtGui>
 #include <QtWebEngineWidgets/QWebEngineView>
 #include "Sight.h"
+#include "Multigraph.h"
 
 class MapWidget:public QWebEngineView
 {
 Q_OBJECT
 private:
     QVector<Sight *> *Sights;
+    Multigraph multigraph;
 public:
     QWebChannel* WebChannel;
     MapWidget(QWidget *parent=0);

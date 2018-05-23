@@ -9,7 +9,7 @@
         #map-canvas { height: 100% }
     </style>
     <script type="text/javascript"
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NzY1Yeij6JnQOmsYYeB5EDBudUY_4mE & libraries=drawing">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxgFfERK4aACfRPc33z9lccXUYScTx1Go&libraries=drawing">
     </script>
     <script type="text/javascript"
         src="qrc:///qtwebchannel/qwebchannel.js">
@@ -26,9 +26,10 @@
                 map: Map,
                 title: Sight.Name,
             });
+            marker.setIcon('qrc:///BlackMarker.png')
             google.maps.event.addListener(marker, 'click', function()
             {
-                Map.panTo(marker.getPosition());
+                marker.setIcon('qrc:///RedMarker.png')
             });
             marker.setMap(Map);
         }
