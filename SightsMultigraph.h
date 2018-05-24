@@ -6,6 +6,7 @@
 #include <vector>
 #include "QString"
 #include "Multigraph.h"
+#include "Sight.h"
 using namespace std;
 
 struct EdgeLabels
@@ -22,9 +23,13 @@ struct Route
 };
 class SightsMultigraph : public multigraph::Multigraph<EdgeLabels*>
 {
+private:
+    vector<Sight *> Sights;
 public:
     SightsMultigraph();
+    void AddVertex(QString name, double x, double y);
     void AddEdge(QString beginVertexName, QString endVertexName, unsigned int time, unsigned int cost, QString vehicle);
+    vector<Sight *> GetSights();
 };
 
 #endif // MULTIGRAPH_H

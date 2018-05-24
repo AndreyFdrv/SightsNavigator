@@ -4,14 +4,13 @@
 #include <QWidget>
 #include <QtGui>
 #include <QtWebEngineWidgets/QWebEngineView>
-#include "Sight.h"
 #include "SightsMultigraph.h"
 
 class MapWidget:public QWebEngineView
 {
 Q_OBJECT
 private:
-    QVector<Sight *> *Sights;
+    vector<Sight *> Sights;
     SightsMultigraph sightsMultigraph;
     QVector<QString> ChoosenSights;
     void FindOptimalWay();
@@ -21,6 +20,7 @@ public:
     ~MapWidget();
     Q_INVOKABLE void SendNextSight(int i);
     Q_INVOKABLE void GetNextChoosenSight(QString name, int count);
+    void FillSightMultigraph();
 public slots:
     void SendFirstSight();
     void GetFirstChoosenSight();
