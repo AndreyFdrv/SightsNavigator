@@ -13,13 +13,17 @@ Q_OBJECT
 private:
     QVector<Sight *> *Sights;
     SightsMultigraph sightsMultigraph;
+    QVector<QString> ChoosenSights;
+    void FindOptimalWay();
 public:
     QWebChannel* WebChannel;
     MapWidget(QWidget *parent=0);
     ~MapWidget();
     Q_INVOKABLE void SendNextSight(int i);
+    Q_INVOKABLE void GetNextChoosenSight(QString name, int count);
 public slots:
     void SendFirstSight();
+    void GetFirstChoosenSight();
 };
 
 #endif // MAPWIDGET_H

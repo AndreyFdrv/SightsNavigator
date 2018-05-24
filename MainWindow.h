@@ -16,6 +16,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_btnFindOptimalWay_clicked();
+
+signals:
+    void FindOptimalWay();
+
 private:
     Ui::MainWindow *ui;
 };

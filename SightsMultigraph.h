@@ -14,7 +14,13 @@ struct EdgeLabels
     unsigned int Cost;//стоимость в рублях
     QString Vehicle;//транспорт(пешком, на такси, ...)
 };
-class SightsMultigraph : public Multigraph<EdgeLabels*>
+struct Route
+{
+    QString BeginSight;
+    QString EndSight;
+    EdgeLabels Labels;
+};
+class SightsMultigraph : public multigraph::Multigraph<EdgeLabels*>
 {
 public:
     SightsMultigraph();

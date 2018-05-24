@@ -15,6 +15,7 @@
         src="qrc:///qtwebchannel/qwebchannel.js">
     </script>
     <script charset="utf-8" type="text/javascript">
+        var choosenSights = [];
         function AddMarker(Sight)
         {
             Sight.getX();
@@ -29,7 +30,16 @@
             marker.setIcon('qrc:///BlackMarker.png')
             google.maps.event.addListener(marker, 'click', function()
             {
-                marker.setIcon('qrc:///RedMarker.png')
+                if(choosenSights.indexOf(marker.title)==-1)
+                {
+                    marker.setIcon('qrc:///RedMarker.png');
+                    choosenSights.push(marker.title);
+                }
+                else
+                {
+                    marker.setIcon('qrc:///BlackMarker.png');
+                    choosenSights.splice(choosenSights.indexOf(marker.tittle), 1);
+                }
             });
             marker.setMap(Map);
         }
@@ -41,6 +51,16 @@
                     MapWidget = channel.objects.MapWidget;
                     MapWidget.SendNextSight(i+1);
                 });
+        }
+        function SendChoosenSight(i)
+        {
+            new QWebChannel(qt.webChannelTransport, function(channel)
+            {
+                if(i >= choosenSights.length)
+                    return;
+                MapWidget = channel.objects.MapWidget;
+                MapWidget.GetNextChoosenSight(choosenSights[i], choosenSights.length);
+            });
         }
         var Map;
         function Initialize()

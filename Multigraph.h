@@ -3,7 +3,8 @@
 #include <vector>
 #include "QString"
 using namespace std;
-
+namespace multigraph
+{
 template <class edgeLabelType> class Multigraph
 {
 protected:
@@ -93,5 +94,6 @@ public:
         endVertex->OutgoingEdges.push_back(edgesGroup);
     }
 };
+}
 
 #endif // MULTIGRAPH_H
