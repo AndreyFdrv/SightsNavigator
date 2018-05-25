@@ -90,38 +90,32 @@ void MapWidget::SendNextSight(int i)
     WebChannel->registerObject("Sight", Sights.at(i));
     page()->runJavaScript("GetSight("+QString::number(i)+");");
 }
+void MapWidget::SetMaxCost(QString maxCostStr)
+{
+    MaxCost = maxCostStr.toInt();
+}
 void MapWidget::FindOptimalWay()
 {
-    //тут sightsMultigraph должен найти оптимальный путь, но это ещё не реализовано
-    vector<Route> result;
-    Route route;
-    route.BeginSight = "Sight1";
-    route.EndSight = "Sight2";
-    EdgeLabels labels;
-    labels.Cost = 0;
-    labels.Time = 20;
-    labels.Vehicle = "пешком";
-    route.Labels = labels;
-    result.push_back(route);
+    vector<Route *> result = sightsMultigraph.FindOptimalWay(ChoosenSights, MaxCost);
     QMessageBox msgResult;
     QString resultStr = "Оптимальный путь:\n\n";
     for(int i = 0; i<result.size(); i++)
     {
         resultStr += QString::number(i+1);
         resultStr += ") Начальная достопримечательность: ";
-        resultStr += result.at(i).BeginSight;
+        resultStr += result.at(i)->BeginSight;
         resultStr += "\n";
         resultStr += "Конечная достопримечательность: ";
-        resultStr += result.at(i).EndSight;
+        resultStr += result.at(i)->EndSight;
         resultStr += "\n";
         resultStr += "Способ перемещения: ";
-        resultStr += result.at(i).Labels.Vehicle;
+        resultStr += result.at(i)->Labels.Vehicle;
         resultStr += "\n";
         resultStr += "Время в пути: ";
-        resultStr += QString::number(result.at(i).Labels.Time);
+        resultStr += QString::number(result.at(i)->Labels.Time);
         resultStr += " минут\n";
         resultStr += "Стоимость: ";
-        resultStr += QString::number(result.at(i).Labels.Cost);
+        resultStr += QString::number(result.at(i)->Labels.Cost);
         resultStr += " рублей\n";
         resultStr += "\n\n";
     }
@@ -130,6 +124,13 @@ void MapWidget::FindOptimalWay()
 }
 void MapWidget::GetNextChoosenSight(QString name, int count)
 {
+    if(count < 2)
+    {
+        QMessageBox msgError;
+        msgError.setText("Выберите хотя бы две достопримечательности");
+        msgError.exec();
+        return;
+    }
     ChoosenSights.push_back(name);
     if(ChoosenSights.size() == count)
         FindOptimalWay();

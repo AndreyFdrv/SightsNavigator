@@ -12,7 +12,8 @@ Q_OBJECT
 private:
     vector<Sight *> Sights;
     SightsMultigraph sightsMultigraph;
-    QVector<QString> ChoosenSights;
+    vector<QString> ChoosenSights;
+    int MaxCost;
     void FindOptimalWay();
 public:
     QWebChannel* WebChannel;
@@ -24,6 +25,7 @@ public:
 public slots:
     void SendFirstSight();
     void GetFirstChoosenSight();
+    void SetMaxCost(QString maxCostStr);
 };
 
 #endif // MAPWIDGET_H

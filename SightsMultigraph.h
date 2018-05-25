@@ -25,11 +25,15 @@ class SightsMultigraph : public multigraph::Multigraph<EdgeLabels*>
 {
 private:
     vector<Sight *> Sights;
+    vector<Route *> FindOptimalWayForCurrentSightsOrder(vector<QString> choosenSights, int maxCost);
+    vector<Route *> GetBetterWay(vector<Route *> way1, vector<Route *> way2);
+    vector<QString> ChangeOrder(vector<QString> choosenSights, int leftChangeIndex, int rightChangeIndex);
 public:
     SightsMultigraph();
     void AddVertex(QString name, double x, double y);
     void AddEdge(QString beginVertexName, QString endVertexName, unsigned int time, unsigned int cost, QString vehicle);
     vector<Sight *> GetSights();
+    vector<Route *> FindOptimalWay(vector<QString> choosenSights, int maxCost, int leftChangeIndex=0, int rightChangeIndex=1, bool isInit = true);
 };
 
 #endif // MULTIGRAPH_H

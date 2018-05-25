@@ -93,6 +93,17 @@ public:
         edgesGroup->EdgesLabels.push_back(label);
         endVertex->OutgoingEdges.push_back(edgesGroup);
     }
+    vector<edgeLabelType> GetEdgesLabels(QString beginVertexName, QString endVertexName)
+    {
+        Vertex *beginVertex = GetVertexByName(beginVertexName);
+        for(int i = 0; i < beginVertex->OutgoingEdges.size(); i++)
+        {
+            if(beginVertex->OutgoingEdges.at(i)->EndVertex->Name == endVertexName)
+                return beginVertex->OutgoingEdges.at(i)->EdgesLabels;
+        }
+        vector<edgeLabelType> emptyResult;
+        return emptyResult;
+    }
 };
 }
 

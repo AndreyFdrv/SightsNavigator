@@ -10,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     QObject::connect(this, SIGNAL(FindOptimalWay()),
             ui->mapWidget, SLOT(GetFirstChoosenSight()));
+    QObject::connect(this, SIGNAL(SetMaxCost(QString)),
+            ui->mapWidget, SLOT(SetMaxCost(QString)));
 }
 MainWindow::~MainWindow()
 {
@@ -19,4 +21,5 @@ MainWindow::~MainWindow()
 void MainWindow::on_btnFindOptimalWay_clicked()
 {
     emit FindOptimalWay();
+    emit SetMaxCost(ui->txtCost->text());
 }

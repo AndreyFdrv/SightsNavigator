@@ -21,6 +21,7 @@ private slots:
 
 signals:
     void FindOptimalWay();
+    void SetMaxCost(QString maxCostStr);
 
 private:
     Ui::MainWindow *ui;
