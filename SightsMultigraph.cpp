@@ -22,33 +22,64 @@ vector<Sight *> SightsMultigraph::GetSights()
 {
     return Sights;
 }
-vector<Route *> SightsMultigraph::FindOptimalWayForCurrentSightsOrder(vector<QString> choosenSights, int maxCost)
+int SightsMultigraph::ComputeCost(vector<Route *> way)
 {
-    //ещё не реализован
-    vector<Route *> result;
-    for(int i = 0; i < choosenSights.size()-1; i++)
+    unsigned int cost = 0;
+    for(int i=0; i<way.size(); i++)
+        cost += way[i]->Labels.Cost;
+    return cost;
+}
+int SightsMultigraph::ComputeTime(vector<Route *> way)
+{
+    unsigned int time = 0;
+    for(int i=0; i<way.size(); i++)
+        time += way[i]->Labels.Time;
+    return time;
+}
+vector<Route *> SightsMultigraph::FindOptimalWayForCurrentSightsOrder(vector<QString> chosenSights, int maxCost)
+{
+    if(chosenSights.size() < 2)
     {
-        vector<EdgeLabels *> edgesLabels = Multigraph::GetEdgesLabels(choosenSights.at(i), choosenSights.at(i+1));
-        if(edgesLabels.size()==0)
+        vector<Route *> emptyResult;
+        return emptyResult;
+    }
+    Vertex *firstSight = Multigraph::GetVertexByName(chosenSights[0]);
+    chosenSights.erase(chosenSights.begin());
+    vector<Route *> optimalWay = FindOptimalWayForCurrentSightsOrder(chosenSights, maxCost);
+    int optimalCostWithoutFirstSight = ComputeCost(optimalWay);
+    if(optimalCostWithoutFirstSight > maxCost)
+    {
+        vector<Route *> emptyResult;
+        return emptyResult;
+    }
+    vector<EdgeLabels *> edgesLabels = GetEdgesLabels(firstSight->Name, chosenSights[0]);
+    bool isSuitableWayExist = false;
+    int optimalTime = INT_MAX;
+    Route *optimalFirstRoute = new Route();
+    for(int i = 0; i < edgesLabels.size(); i++)
+    {
+        int cost = edgesLabels[i]->Cost + optimalCostWithoutFirstSight;
+        if(cost > maxCost)
+            continue;
+        int time = edgesLabels[i]->Time + ComputeTime(optimalWay);
+        if(time < optimalTime)
         {
-            vector<Route *> emptyResult;
-            return emptyResult;
-        }
-        for(int j = 0; j < edgesLabels.size(); j++)
-        {
-            if(edgesLabels.at(j)->Vehicle == "пешком")
-            {
-                Route *route = new Route();
-                route->BeginSight = choosenSights.at(i);
-                route->EndSight = choosenSights.at(i+1);
-                route->Labels.Cost = edgesLabels.at(j)->Cost;
-                route->Labels.Time = edgesLabels.at(j)->Time;
-                route->Labels.Vehicle = edgesLabels.at(j)->Vehicle;
-                result.push_back(route);
-            }
+            optimalTime = time;
+            isSuitableWayExist = true;
+            optimalFirstRoute->BeginSight = firstSight->Name;
+            optimalFirstRoute->EndSight = chosenSights[0];
+            optimalFirstRoute->Labels.Cost = edgesLabels[i]->Cost;
+            optimalFirstRoute->Labels.Time = edgesLabels[i]->Time;
+            optimalFirstRoute->Labels.Vehicle = edgesLabels[i]->Vehicle;
         }
     }
-    return result;
+    if(!isSuitableWayExist)
+    {
+        vector<Route *> emptyResult;
+        return emptyResult;
+    }
+    optimalWay.insert(optimalWay.begin(), optimalFirstRoute);
+    return optimalWay;
 }
 vector<Route *> SightsMultigraph::GetBetterWay(vector<Route *> way1, vector<Route *> way2)
 {
@@ -70,43 +101,43 @@ vector<Route *> SightsMultigraph::GetBetterWay(vector<Route *> way1, vector<Rout
     }
     return sum1<sum2?way1:way2;
 }
-vector<QString> SightsMultigraph::ChangeOrder(vector<QString> choosenSights, int i, int j)
+vector<QString> SightsMultigraph::ChangeOrder(vector<QString> chosenSights, int i, int j)
 {
-    QString temp = choosenSights[i];
-    choosenSights[i] = choosenSights[j];
-    choosenSights[j] = temp;
-    return choosenSights;
+    QString temp = chosenSights[i];
+    chosenSights[i] = chosenSights[j];
+    chosenSights[j] = temp;
+    return chosenSights;
 }
-vector<Route *> SightsMultigraph::FindOptimalWay(vector<QString> choosenSights, int maxCost, int leftChangeIndex,
+vector<Route *> SightsMultigraph::FindOptimalWay(vector<QString> chosenSights, int maxCost, int leftChangeIndex,
                                                  int rightChangeIndex, bool isInit)
 {
     vector<Route *> optimalWay;
     if(isInit)
     {
-        optimalWay = FindOptimalWayForCurrentSightsOrder(choosenSights, maxCost);
+        optimalWay = FindOptimalWayForCurrentSightsOrder(chosenSights, maxCost);
     }
     vector<Route *> way;
     if(leftChangeIndex+1<rightChangeIndex)
     {
-        way = FindOptimalWay(choosenSights, maxCost, leftChangeIndex+1, rightChangeIndex, false);
+        way = FindOptimalWay(chosenSights, maxCost, leftChangeIndex+1, rightChangeIndex, false);
         optimalWay = GetBetterWay(optimalWay, way);
     }
-    if(rightChangeIndex+1<choosenSights.size())
+    if(rightChangeIndex+1<chosenSights.size())
     {
-        way = FindOptimalWay(choosenSights, maxCost, leftChangeIndex, rightChangeIndex+1, false);
+        way = FindOptimalWay(chosenSights, maxCost, leftChangeIndex, rightChangeIndex+1, false);
         optimalWay = GetBetterWay(optimalWay, way);
     }
-    choosenSights = ChangeOrder(choosenSights, leftChangeIndex, rightChangeIndex);
-    way = FindOptimalWayForCurrentSightsOrder(choosenSights, maxCost);
+    chosenSights = ChangeOrder(chosenSights, leftChangeIndex, rightChangeIndex);
+    way = FindOptimalWayForCurrentSightsOrder(chosenSights, maxCost);
     optimalWay = GetBetterWay(optimalWay, way);
     if(leftChangeIndex+1<rightChangeIndex)
     {
-        way = FindOptimalWay(choosenSights, maxCost, leftChangeIndex+1, rightChangeIndex, false);
+        way = FindOptimalWay(chosenSights, maxCost, leftChangeIndex+1, rightChangeIndex, false);
         optimalWay = GetBetterWay(optimalWay, way);
     }
-    if(rightChangeIndex+1<choosenSights.size())
+    if(rightChangeIndex+1<chosenSights.size())
     {
-        way = FindOptimalWay(choosenSights, maxCost, leftChangeIndex, rightChangeIndex+1, false);
+        way = FindOptimalWay(chosenSights, maxCost, leftChangeIndex, rightChangeIndex+1, false);
         optimalWay = GetBetterWay(optimalWay, way);
     }
     return optimalWay;

@@ -54,7 +54,7 @@ void MapWidget::FillSightMultigraph()
     sightsMultigraph.AddEdge("Казанский собор", "Адмиралтейство", 9, taxiCostPerKM * 2.4, "на такси");
     sightsMultigraph.AddEdge("Казанский собор", "Дворцовая площадь", 4, taxiCostPerKM * 1, "на такси");
     sightsMultigraph.AddEdge("Казанский собор", "Медный всадник", 8, taxiCostPerKM * 1.9, "на такси");
-    sightsMultigraph.AddEdge("Казанский собор", "Исакиевский собор", 7, taxiCostPerKM * 1.5, "на такси");
+    sightsMultigraph.AddEdge("Казанский собор", "Исакиевский собор", 5, taxiCostPerKM * 1.5, "на такси");
     sightsMultigraph.AddEdge("Казанский собор", "Спас на Крови", 3, taxiCostPerKM * 0.4, "на такси");
     sightsMultigraph.AddEdge("Казанский собор", "Петропавловская крепость", 7, taxiCostPerKM * 2.6, "на такси");
 
@@ -74,7 +74,7 @@ void MapWidget::FillSightMultigraph()
     sightsMultigraph.AddEdge("Медный всадник", "Петропавловская крепость", 7, taxiCostPerKM * 3.3, "на такси");
 
     sightsMultigraph.AddEdge("Исакиевский собор", "Спас на Крови", 8, taxiCostPerKM * 2.2, "на такси");
-    sightsMultigraph.AddEdge("Исакиевский собор", "Петропавловская крепость", 7, taxiCostPerKM * 2.2, "на такси");
+    sightsMultigraph.AddEdge("Исакиевский собор", "Петропавловская крепость", 10, taxiCostPerKM * 2.2, "на такси");
 
     sightsMultigraph.AddEdge("Спас на Крови", "Петропавловская крепость", 7, taxiCostPerKM * 3.2, "на такси");
 }
@@ -92,11 +92,21 @@ void MapWidget::SendNextSight(int i)
 }
 void MapWidget::SetMaxCost(QString maxCostStr)
 {
-    MaxCost = maxCostStr.toInt();
+    bool success;
+    MaxCost = maxCostStr.toInt(&success);
+    if((!success)||(MaxCost<0))
+    {
+        MaxCost = -1;
+        QMessageBox msgError;
+        msgError.setText("Сумма должна быть неотрицательным целым числом");
+        msgError.exec();
+    }
 }
 void MapWidget::FindOptimalWay()
 {
-    vector<Route *> result = sightsMultigraph.FindOptimalWay(ChoosenSights, MaxCost);
+    if(MaxCost == -1)
+        return;
+    vector<Route *> result = sightsMultigraph.FindOptimalWay(chosenSights, MaxCost);
     QMessageBox msgResult;
     QString resultStr = "Оптимальный путь:\n\n";
     for(int i = 0; i<result.size(); i++)
@@ -131,14 +141,14 @@ void MapWidget::GetNextChoosenSight(QString name, int count)
         msgError.exec();
         return;
     }
-    ChoosenSights.push_back(name);
-    if(ChoosenSights.size() == count)
+    chosenSights.push_back(name);
+    if(chosenSights.size() == count)
         FindOptimalWay();
-    page()->runJavaScript("SendChoosenSight("+QString::number(ChoosenSights.size())+");");
+    page()->runJavaScript("SendChoosenSight("+QString::number(chosenSights.size())+");");
 }
 void MapWidget::GetFirstChoosenSight()
 {
-    ChoosenSights.clear();
+    chosenSights.clear();
     page()->runJavaScript("SendChoosenSight(0);");
 }
 MapWidget::~MapWidget()
