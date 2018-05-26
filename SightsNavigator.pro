@@ -17,13 +17,15 @@ SOURCES +=\
     MapWidget.cpp \
     Main.cpp \
     Sight.cpp \
-    SightsMultigraph.cpp
+    SightsMultigraph.cpp \
+    MultigraphException.cpp
 
 HEADERS  += MainWindow.h \
     MapWidget.h \
     Sight.h \
     SightsMultigraph.h \
-    Multigraph.h
+    Multigraph.h \
+    MultigraphException.h
 
 FORMS    += MainWindow.ui
 

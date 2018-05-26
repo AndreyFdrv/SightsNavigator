@@ -12,7 +12,7 @@ Q_OBJECT
 private:
     vector<Sight *> Sights;
     SightsMultigraph sightsMultigraph;
-    vector<QString> chosenSights;
+    vector<QString> ChosenSights;
     int MaxCost;
     void FindOptimalWay();
 public:

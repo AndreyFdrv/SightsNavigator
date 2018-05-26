@@ -1,7 +1,8 @@
 #ifndef MULTIGRAPH_H
 #define MULTIGRAPH_H
 #include <vector>
-#include "QString"
+#include <QString>
+#include "MultigraphException.h"
 using namespace std;
 namespace multigraph
 {
@@ -48,7 +49,8 @@ public:
     void AddVertex(QString name)
     {
         if(IsVertexExist(name))
-            throw "Вершина с таким значением уже существует";
+            throw VertexExistingException("Вершина с таким значением уже существует", __LINE__, __FUNCTION__, __TIMESTAMP__,
+                                          name);
         Vertex *vertex = new Vertex;
         vertex->Name = name;
         Vertices.push_back(vertex);
@@ -56,9 +58,9 @@ public:
     void AddEdge(QString beginVertexName, QString endVertexName, edgeLabelType label)
     {
         if(!IsVertexExist(beginVertexName))
-            throw "Начальной вершины не существует";
+            throw VertexExistingException("Вершины не существует", __LINE__, __FUNCTION__, __TIMESTAMP__, beginVertexName);
         if(!IsVertexExist(endVertexName))
-            throw "Конечной вершины не существует";
+            throw VertexExistingException("Вершины не существует", __LINE__, __FUNCTION__, __TIMESTAMP__, endVertexName);
         Vertex *beginVertex = GetVertexByName(beginVertexName);
         bool isEdgesGroupExist = false;
         for(int i=0; i<beginVertex->OutgoingEdges.size(); i++)

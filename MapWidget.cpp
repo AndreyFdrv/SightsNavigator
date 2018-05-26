@@ -4,7 +4,14 @@
 #include <QMessageBox>
 MapWidget::MapWidget(QWidget *parent): QWebEngineView(parent)
 {
-    FillSightMultigraph();
+    try
+    {
+        FillSightMultigraph();
+    }
+    catch(exception& e)
+    {
+        QMessageBox::information(this, "", QString(e.what()), QMessageBox::Ok);
+    }
     Sights = sightsMultigraph.GetSights();
     WebChannel = new QWebChannel();
     page()->setWebChannel(WebChannel);
@@ -106,7 +113,7 @@ void MapWidget::FindOptimalWay()
 {
     if(MaxCost == -1)
         return;
-    vector<Route *> result = sightsMultigraph.FindOptimalWay(chosenSights, MaxCost);
+    vector<Route *> result = sightsMultigraph.FindOptimalWay(ChosenSights, MaxCost);
     QMessageBox msgResult;
     QString resultStr = "Оптимальный путь:\n\n";
     for(int i = 0; i<result.size(); i++)
@@ -141,14 +148,14 @@ void MapWidget::GetNextChoosenSight(QString name, int count)
         msgError.exec();
         return;
     }
-    chosenSights.push_back(name);
-    if(chosenSights.size() == count)
+    ChosenSights.push_back(name);
+    if(ChosenSights.size() == count)
         FindOptimalWay();
-    page()->runJavaScript("SendChoosenSight("+QString::number(chosenSights.size())+");");
+    page()->runJavaScript("SendChoosenSight("+QString::number(ChosenSights.size())+");");
 }
 void MapWidget::GetFirstChoosenSight()
 {
-    chosenSights.clear();
+    ChosenSights.clear();
     page()->runJavaScript("SendChoosenSight(0);");
 }
 MapWidget::~MapWidget()
