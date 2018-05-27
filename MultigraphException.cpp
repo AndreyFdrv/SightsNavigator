@@ -23,6 +23,9 @@ const char *Exception::what() const throw()
     case(MultigraphVertexExistingException):
         oss << "multigraph::VertexExistingException\n";
         break;
+    case(MultigraphIncorrectIndexException):
+        oss << "multigraph::IncorrectIndexException\n";
+        break;
     }
     oss << "\"" << Text.toStdString()  << "\" в функции \"" << Function.toStdString() << "\" в строке " << Line
         << ". Время: " << Time.toStdString();

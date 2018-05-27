@@ -32,6 +32,70 @@ protected:
         return NULL;
     }
 public:
+    class VertexIterator
+    {
+    private:
+        size_t Position;
+        vector<Vertex *> Vertices;
+        typename vector<Vertex *>::iterator Iterator;
+    public:
+        VertexIterator(const VertexIterator& iterator)
+        {
+            Vertices = iterator.Vertices;
+            Position = iterator.Position;
+            Iterator = Vertices->begin();
+            for(size_t i = 0; i < Position; i++)
+                Iterator++;
+        }
+        VertexIterator(const size_t position, vector<Vertex *> vertices)
+        {
+            Position = position;
+            Vertices = vertices;
+            Iterator = Vertices->begin();
+            for(size_t i = 0; i < _position; i++)
+                Iterator++;
+        }
+        VertexIterator& operator ++ ()
+        {
+            if(Vertives->size() < (Position + 1))
+            {
+                throw IncorrectIndexException("Индекс указывает за пределы массива", __LINE__, __FUNCTION__, __TIMESTAMP__);
+                return *this;
+            }
+            Position++;
+            Iterator++;
+            return *this;
+        }
+        VertexIterator& operator += (const size_t k)
+        {
+            if(_vertexP->size() < (_position + k))
+            {
+                throw IncorrectIndexException("Индекс указывает за пределы массива", __LINE__, __FUNCTION__, __TIMESTAMP__);
+                return *this;
+            }
+            Position += k;
+            for(size_t i = 0; i < k; i++)
+                Iterator++;
+            return *this;
+        }
+        bool operator == (const VertexIterator& iterator)
+        {
+            return (Iterator == iterator.Iterator);
+        }
+        bool operator != (const VertexIterator& iterator)
+        {
+            return (Iterator != iterator.Iterator);
+        }
+        Vertex* operator * ()
+        {
+            if(Position == Vertices->size())
+            {
+                throw IncorrectIndexException("Индекс указывает за пределы массива", __LINE__, __FUNCTION__, __TIMESTAMP__);
+                return NULL;
+            }
+            return *Iterator;
+        }
+    };
     Multigraph()
     {
 

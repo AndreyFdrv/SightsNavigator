@@ -5,7 +5,8 @@
 namespace multigraph
 {
 enum ExceptionType { MultigraphException,
-                   MultigraphVertexExistingException
+                     MultigraphVertexExistingException,
+                     MultigraphIncorrectIndexException
                    };
 class Exception : public std::exception
 {
@@ -32,6 +33,14 @@ public:
     }
     virtual const char* what() const throw();
     QString Name;
+};
+class IncorrectIndexException:public Exception
+{
+public:
+    IncorrectIndexException(QString text, int line, QString function, QString time):Exception(text, line, function, time)
+    {
+        Type = MultigraphIncorrectIndexException;
+    }
 };
 }
 #endif // MULTIGRAPHEXCEPTION_H
