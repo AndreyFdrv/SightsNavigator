@@ -14,7 +14,7 @@ protected:
     {
         Vertex *BeginVertex;
         Vertex *EndVertex;
-        vector<edgeLabelType> EdgesLabels;
+        vector<edgeLabelType *> EdgesLabels;
     };
     struct Vertex
     {
@@ -54,6 +54,69 @@ protected:
         }
         return false;
     }
+    class Allocator
+    {
+    public:
+        Allocator()
+        {
+
+        }
+        void ReturnAll()
+        {
+            for_each(VerticesPool.begin(), VerticesPool.end(), [](Vertex* i)
+            {
+                delete i;
+            });
+            for_each(EdgesPool.begin(), EdgesPool.end(), [](EdgesGroup* i)
+            {
+                delete i;
+            });
+            VerticesPool.clear();
+            EdgesPool.clear();
+        }
+        virtual ~Allocator()
+        {
+            ReturnAll();
+        }
+        Vertex *AddVertex()
+        {
+            Vertex *vertex = new Vertex();
+            VerticesPool.push_back(vertex);
+            return vertex;
+        }
+        EdgesGroup *AddEdgesGroup()
+        {
+            EdgesGroup *edgesGroup = new EdgesGroup();
+            EdgesPool.push_back(edgesGroup);
+            return edgesGroup;
+        }
+        void ReturnVertex(Vertex* vertex)
+        {
+            auto pos = find(VerticesPool.begin(), VerticesPool.end(), vertex);
+            if(pos == VerticesPool.end())
+            {
+                throw MultigraphAllocatorException("Вершины не существует", __LINE__, __FUNCTION__, __TIMESTAMP__);
+                return;
+            }
+            VerticesPool.erase(pos);
+            delete vertex;
+        }
+        void ReturnEdges(EdgesGroup *edges)
+        {
+            auto pos = find(EdgesPool.begin(), EdgesPool.end(), edges);
+            if(pos == EdgesPool.end())
+            {
+                throw MultigraphAllocatorException("Рёбер не существует", __LINE__, __FUNCTION__, __TIMESTAMP__);
+                return;
+            }
+            EdgesPool.erase(pos);
+            delete edges;
+        }
+    private:
+        vector<Vertex *> VerticesPool;
+        vector<EdgesGroup *> EdgesPool;
+    };
+    Allocator allocator;
 public:
     class VertexIterator
     {
@@ -136,13 +199,13 @@ public:
     void AddVertex(QString name)
     {
         if(IsVertexExist(name))
-            throw VertexExistingException("Вершина с таким значением уже существует", __LINE__, __FUNCTION__, __TIMESTAMP__,
-                                          name);
-        Vertex *vertex = new Vertex;
+            throw VertexExistingException("Вершина с таким значением уже существует", __LINE__, __FUNCTION__,
+                                          __TIMESTAMP__, name);
+        Vertex *vertex = allocator.AddVertex();
         vertex->Name = name;
         Vertices.push_back(vertex);
     }
-    void AddEdge(QString beginVertexName, QString endVertexName, edgeLabelType label)
+    void AddEdge(QString beginVertexName, QString endVertexName, edgeLabelType *label)
     {
         if(!IsVertexExist(beginVertexName))
             throw VertexExistingException("Вершины не существует", __LINE__, __FUNCTION__, __TIMESTAMP__, beginVertexName);
@@ -160,9 +223,9 @@ public:
             }
         }
         Vertex *endVertex = GetVertexByName(endVertexName);
-        EdgesGroup *edgesGroup = new EdgesGroup();
         if(!isEdgesGroupExist)
         {
+            EdgesGroup *edgesGroup = allocator.AddEdgesGroup();
             edgesGroup->BeginVertex = beginVertex;
             edgesGroup->EndVertex = endVertex;
             edgesGroup->EdgesLabels.push_back(label);
@@ -176,13 +239,18 @@ public:
                 return;
             }
         }
-        edgesGroup = new EdgesGroup();
+        EdgesGroup *edgesGroup = allocator.AddEdgesGroup();
         edgesGroup->BeginVertex = endVertex;
         edgesGroup->EndVertex = beginVertex;
         edgesGroup->EdgesLabels.push_back(label);
         endVertex->OutgoingEdges.push_back(edgesGroup);
     }
-    vector<edgeLabelType> GetEdgesLabels(QString beginVertexName, QString endVertexName)
+    void Clear()
+    {
+        allocator.ReturnAll();
+        Vertices.clear();
+    }
+    vector<edgeLabelType *> GetEdgesLabels(QString beginVertexName, QString endVertexName)
     {
         Vertex *beginVertex = GetVertexByName(beginVertexName);
         for(int i = 0; i < beginVertex->OutgoingEdges.size(); i++)
@@ -190,7 +258,7 @@ public:
             if(beginVertex->OutgoingEdges.at(i)->EndVertex->Name == endVertexName)
                 return beginVertex->OutgoingEdges.at(i)->EdgesLabels;
         }
-        vector<edgeLabelType> emptyResult;
+        vector<edgeLabelType *> emptyResult;
         return emptyResult;
     }
 };

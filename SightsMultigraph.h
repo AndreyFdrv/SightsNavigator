@@ -21,7 +21,7 @@ struct Route
     QString EndSight;
     EdgeLabels Labels;
 };
-class SightsMultigraph : public multigraph::Multigraph<EdgeLabels*>
+class SightsMultigraph : public multigraph::Multigraph<EdgeLabels>
 {
 private:
     vector<Sight *> Sights;

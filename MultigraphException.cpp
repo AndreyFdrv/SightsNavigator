@@ -6,8 +6,8 @@ Exception::Exception():exception()
 {
 
 }
-Exception::Exception(QString text, int line, QString function, QString timestamp):exception(), Type(MultigraphException),
-    Text(text), Line(line), Function(function), Time(timestamp)
+Exception::Exception(QString text, int line, QString function, QString time):exception(), Type(MultigraphException),
+    Text(text), Line(line), Function(function), Time(time)
 {
 
 }
@@ -25,6 +25,9 @@ const char *Exception::what() const throw()
         break;
     case(MultigraphIncorrectIndexException):
         oss << "multigraph::IncorrectIndexException\n";
+        break;
+    case(MultigraphAllocatorException):
+        oss << "multigraph::AllocatorException\n";
         break;
     }
     oss << "\"" << Text.toStdString()  << "\" в функции \"" << Function.toStdString() << "\" в строке " << Line
