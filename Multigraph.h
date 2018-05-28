@@ -31,6 +31,29 @@ protected:
         }
         return NULL;
     }
+    int GetVertexIndexByName(QString name)
+    {
+        for(int i=0; i<Vertices.size(); i++)
+        {
+            if(Vertices.at(i)->Name == name)
+                return i;
+        }
+        return -1;
+    }
+    bool IsWayExist(Vertex *beginVertex, Vertex *endVertex, vector<bool> *isVerticesVisited)
+    {
+        if (beginVertex->Name == endVertex->Name)
+            return true;
+        (*isVerticesVisited)[GetVertexIndexByName(beginVertex->Name)] = true;
+        for(int i=0; i<beginVertex->OutgoingEdges.size(); i++)
+        {
+            Vertex *edgeEndVertex = beginVertex->OutgoingEdges[i]->EndVertex;
+            if((!(*isVerticesVisited)[GetVertexIndexByName(edgeEndVertex->Name)])&&
+                    IsWayExist(edgeEndVertex, endVertex, isVerticesVisited))
+                return true;
+        }
+        return false;
+    }
 public:
     class VertexIterator
     {

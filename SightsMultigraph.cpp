@@ -142,3 +142,20 @@ vector<Route *> SightsMultigraph::FindOptimalWay(vector<QString> chosenSights, i
     }
     return optimalWay;
 }
+bool SightsMultigraph::CheckGraphInvariant(vector<QString> chosenSights)
+{
+    if(chosenSights.size() < 2)
+        return false;
+    Vertex *beginVertex = Multigraph::GetVertexByName(chosenSights[0]);
+    vector<bool> *isVerticesVisited=new vector<bool>();
+    for(int i=0; i<Multigraph::Vertices.size(); i++)
+        isVerticesVisited->push_back(false);
+    for(int i=1; i<chosenSights.size(); i++)
+    {
+        if(!Multigraph::IsWayExist(beginVertex, Multigraph::GetVertexByName(chosenSights[i]), isVerticesVisited))
+            return false;
+        for(int j=0; j<Multigraph::Vertices.size(); j++)
+            (*isVerticesVisited)[j]=false;
+    }
+    return true;
+}

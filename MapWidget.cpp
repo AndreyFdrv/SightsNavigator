@@ -71,13 +71,13 @@ void MapWidget::FillSightMultigraph()
     sightsMultigraph.AddEdge("Адмиралтейство", "Спас на Крови", 9, taxiCostPerKM * 3.3, "на такси");
     sightsMultigraph.AddEdge("Адмиралтейство", "Петропавловская крепость", 12, taxiCostPerKM * 4.5, "на такси");
 
-    sightsMultigraph.AddEdge("Дворцовая площадь", "Медный всадник", 7, taxiCostPerKM * 2.6, "на такси");
+    sightsMultigraph.AddEdge("Дворцовая площадь", "Медный всадник", 5, taxiCostPerKM * 1.9, "на такси");
     sightsMultigraph.AddEdge("Дворцовая площадь", "Исакиевский собор", 7, taxiCostPerKM * 1.6, "на такси");
     sightsMultigraph.AddEdge("Дворцовая площадь", "Спас на Крови", 4, taxiCostPerKM * 0.85, "на такси");
     sightsMultigraph.AddEdge("Дворцовая площадь", "Петропавловская крепость", 9, taxiCostPerKM * 2.7, "на такси");
 
     sightsMultigraph.AddEdge("Медный всадник", "Исакиевский собор", 2, taxiCostPerKM * 0.45, "на такси");
-    sightsMultigraph.AddEdge("Медный всадник", "Спас на Крови", 5, taxiCostPerKM * 2, "на такси");
+    sightsMultigraph.AddEdge("Медный всадник", "Спас на Крови", 5, taxiCostPerKM * 2.4, "на такси");
     sightsMultigraph.AddEdge("Медный всадник", "Петропавловская крепость", 7, taxiCostPerKM * 3.3, "на такси");
 
     sightsMultigraph.AddEdge("Исакиевский собор", "Спас на Крови", 8, taxiCostPerKM * 2.2, "на такси");
@@ -113,6 +113,13 @@ void MapWidget::FindOptimalWay()
 {
     if(MaxCost == -1)
         return;
+    if(!sightsMultigraph.CheckGraphInvariant(ChosenSights))
+    {
+        QMessageBox msgError;
+        msgError.setText("Не удалось найти оптимальный путь");
+        msgError.exec();
+        return;
+    }
     vector<Route *> result = sightsMultigraph.FindOptimalWay(ChosenSights, MaxCost);
     QMessageBox msgResult;
     QString resultStr = "Оптимальный путь:\n\n";

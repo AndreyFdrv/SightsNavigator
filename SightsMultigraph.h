@@ -35,7 +35,9 @@ public:
     void AddVertex(QString name, double x, double y);
     void AddEdge(QString beginVertexName, QString endVertexName, unsigned int time, unsigned int cost, QString vehicle);
     vector<Sight *> GetSights();
-    vector<Route *> FindOptimalWay(vector<QString> chosenSights, int maxCost, int leftChangeIndex=0, int rightChangeIndex=1, bool isInit = true);
+    vector<Route *> FindOptimalWay(vector<QString> chosenSights, int maxCost, int leftChangeIndex=0, int rightChangeIndex=1,
+                                   bool isInit = true);
+    bool CheckGraphInvariant(vector<QString> chosenSights);
 };
 
 #endif // MULTIGRAPH_H
