@@ -121,6 +121,13 @@ void MapWidget::FindOptimalWay()
         return;
     }
     vector<Route *> result = sightsMultigraph.FindOptimalWay(ChosenSights, MaxCost);
+    if(result.size()==0)
+    {
+        QMessageBox msgError;
+        msgError.setText("Не удалось найти оптимальный путь");
+        msgError.exec();
+        return;
+    }
     QMessageBox msgResult;
     QString resultStr = "Оптимальный путь:\n\n";
     for(int i = 0; i<result.size(); i++)
