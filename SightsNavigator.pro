@@ -18,14 +18,16 @@ SOURCES +=\
     Main.cpp \
     Sight.cpp \
     SightsMultigraph.cpp \
-    MultigraphException.cpp
+    MultigraphException.cpp \
+    EdgesGroupManipulator.cpp
 
 HEADERS  += MainWindow.h \
     MapWidget.h \
     Sight.h \
     SightsMultigraph.h \
     Multigraph.h \
-    MultigraphException.h
+    MultigraphException.h \
+    EdgesGroupManipulator.h
 
 FORMS    += MainWindow.ui
 

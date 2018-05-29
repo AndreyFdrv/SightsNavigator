@@ -21,6 +21,7 @@ struct Route
     QString EndSight;
     EdgeLabels Labels;
 };
+class EdgesGroupManipulator;
 class SightsMultigraph : public multigraph::Multigraph<EdgeLabels>
 {
 private:
@@ -31,6 +32,7 @@ private:
     int ComputeCost(vector<Route *> way);
     int ComputeTime(vector<Route *> way);
 public:
+    friend EdgesGroupManipulator;
     SightsMultigraph();
     void AddVertex(QString name, double x, double y);
     void AddEdge(QString beginVertexName, QString endVertexName, unsigned int time, unsigned int cost, QString vehicle);
