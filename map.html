@@ -16,6 +16,16 @@
     </script>
     <script charset="utf-8" type="text/javascript">
         var chosenSights = [];
+        var markers = [];
+        function Clear()
+        {
+            chosenSights.splice(0, chosenSights.length);
+            markers.forEach(function(marker, i, markers)
+            {
+                marker.setMap(null);
+                marker=null;
+            });
+        }
         function AddMarker(Sight)
         {
             Sight.getX();
@@ -27,6 +37,7 @@
                 map: Map,
                 title: Sight.Name,
             });
+            markers.push(marker);
             marker.setIcon('qrc:///BlackMarker.png')
             google.maps.event.addListener(marker, 'click', function()
             {

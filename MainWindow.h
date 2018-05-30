@@ -19,9 +19,15 @@ public:
 private slots:
     void on_btnFindOptimalWay_clicked();
 
+    void on_btnSave_clicked();
+
+    void on_btnLoad_clicked();
+
 signals:
     void FindOptimalWay();
     void SetMaxCost(QString maxCostStr);
+    void SaveSightsMultigraph(QString filename);
+    void LoadSightsMultigraph(QString filename);
 
 private:
     Ui::MainWindow *ui;

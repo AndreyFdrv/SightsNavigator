@@ -26,6 +26,8 @@ public slots:
     void SendFirstSight();
     void GetFirstChoosenSight();
     void SetMaxCost(QString maxCostStr);
+    void SaveSightsMultigraph(QString filename);
+    void LoadSightsMultigraph(QString filename, bool isInit=false);
 };
 
 #endif // MAPWIDGET_H

@@ -4,9 +4,10 @@
 #include <QMessageBox>
 MapWidget::MapWidget(QWidget *parent): QWebEngineView(parent)
 {
+    const QString defaultMultigraphFilename = "default.mg";
     try
     {
-        FillSightMultigraph();
+        LoadSightsMultigraph(defaultMultigraphFilename, true);
     }
     catch(exception& e)
     {
@@ -176,4 +177,24 @@ MapWidget::~MapWidget()
 {
     delete WebChannel;
     exit(0);
+}
+void MapWidget::SaveSightsMultigraph(QString filename)
+{
+    if(sightsMultigraph.IsEmpty())
+        return;
+    sightsMultigraph.Serialize(filename);
+}
+void MapWidget::LoadSightsMultigraph(QString filename, bool isInit)
+{
+    sightsMultigraph.Clear();
+    page()->runJavaScript("Clear();");
+    if(!sightsMultigraph.Deserialize(filename))
+    {
+        QMessageBox msgError;
+        msgError.setText("Ошибка загрузки");
+        msgError.exec();
+    }
+    Sights = sightsMultigraph.GetSights();
+    if(!isInit)
+        SendFirstSight();
 }

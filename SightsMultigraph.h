@@ -40,6 +40,9 @@ public:
     vector<Route *> FindOptimalWay(vector<QString> chosenSights, int maxCost, int leftChangeIndex=0, int rightChangeIndex=1,
                                    bool isInit = true);
     bool CheckGraphInvariant(vector<QString> chosenSights);
+    bool Serialize(QString filename);
+    bool Deserialize(QString filename);
+    void Clear();
 };
 
 #endif // MULTIGRAPH_H

@@ -143,7 +143,7 @@ public:
         }
         VertexIterator& operator ++ ()
         {
-            if(Vertives->size() < (Position + 1))
+            if(Vertices->size() < (Position + 1))
             {
                 throw IncorrectIndexException("Индекс указывает за пределы массива", __LINE__, __FUNCTION__, __TIMESTAMP__);
                 return *this;
@@ -154,7 +154,7 @@ public:
         }
         VertexIterator& operator += (const size_t k)
         {
-            if(_vertexP->size() < (_position + k))
+            if(Vertices->size() < (Position + k))
             {
                 throw IncorrectIndexException("Индекс указывает за пределы массива", __LINE__, __FUNCTION__, __TIMESTAMP__);
                 return *this;
@@ -245,7 +245,7 @@ public:
         edgesGroup->EdgesLabels.push_back(label);
         endVertex->OutgoingEdges.push_back(edgesGroup);
     }
-    void Clear()
+    virtual void Clear()
     {
         allocator.ReturnAll();
         Vertices.clear();
@@ -260,6 +260,24 @@ public:
         }
         vector<edgeLabelType *> emptyResult;
         return emptyResult;
+    }
+    bool IsEmpty()
+    {
+        if(Vertices.size()==0)
+            return true;
+        return false;
+    }
+    int EdgesCount()
+    {
+        int sum = 0;
+        for(int i=0; i<Vertices.size(); i++)
+        {
+            for(int j=0; j<Vertices[i]->OutgoingEdges.size(); j++)
+            {
+                sum+=Vertices[i]->OutgoingEdges[j]->EdgesLabels.size();
+            }
+        }
+        return sum/2;
     }
 };
 }

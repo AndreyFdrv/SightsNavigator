@@ -1,4 +1,6 @@
 #include "SightsMultigraph.h"
+#include <QFile>
+#include <sstream>
 SightsMultigraph::SightsMultigraph()
 {
 
@@ -158,4 +160,128 @@ bool SightsMultigraph::CheckGraphInvariant(vector<QString> chosenSights)
             (*isVerticesVisited)[j]=false;
     }
     return true;
+}
+bool SightsMultigraph::Serialize(QString filename)
+{
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly))
+        return false;
+    file.write(to_string(Sights.size()).c_str());
+    file.write("\r\n");
+    for(int i=0; i<Sights.size(); i++)
+    {
+        file.write((Sights[i]->getName()).toStdString().c_str());
+        file.write("\t");
+        file.write(to_string(Sights[i]->getX()).c_str());
+        file.write("\t");
+        file.write(to_string(Sights[i]->getY()).c_str());
+        file.write("\t");
+        file.write("\r\n");
+    }
+    int edgesCount = Multigraph::EdgesCount();
+    file.write(to_string(edgesCount).c_str());
+    file.write("\r\n");
+    for(int i=0; i<Vertices.size(); i++)
+    {
+        QString beginName = Vertices[i]->Name;
+        for(int j=0; j<Vertices[i]->OutgoingEdges.size(); j++)
+        {
+            QString endName = Vertices[i]->OutgoingEdges[j]->EndVertex->Name;
+            if(QString::compare(beginName, endName, Qt::CaseSensitive)<0)
+                continue;
+            for(int k = 0; k<Vertices[i]->OutgoingEdges[j]->EdgesLabels.size(); k++)
+            {
+                file.write(beginName.toStdString().c_str());
+                file.write("\t");
+                file.write(endName.toStdString().c_str());
+                file.write("\t");
+                file.write(to_string(Vertices[i]->OutgoingEdges[j]->EdgesLabels[k]->Time).c_str());
+                file.write("\t");
+                file.write(to_string(Vertices[i]->OutgoingEdges[j]->EdgesLabels[k]->Cost).c_str());
+                file.write("\t");
+                file.write((Vertices[i]->OutgoingEdges[j]->EdgesLabels[k]->Vehicle).toStdString().c_str());
+                file.write("\t");
+                file.write("\r\n");
+            }
+        }
+    }
+    file.close();
+    return true;
+}
+bool SightsMultigraph::Deserialize(QString filename)
+{
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly))
+        return false;
+    QString verticesCountStr = file.readLine();
+    bool success;
+    int verticesCount = verticesCountStr.toInt(&success);
+    if(!success)
+    {
+        file.close();
+        return false;
+    }
+    for(int i=0; i<verticesCount; i++)
+    {
+        QStringList sightStr = QString(file.readLine()).split('\t');
+        if(sightStr.size() < 3)
+        {
+            file.close();
+            return false;
+        }
+        QString name = sightStr[0];
+        Multigraph::AddVertex(name);
+        double x = sightStr[1].toDouble(&success);
+        if(!success)
+        {
+            file.close();
+            return false;
+        }
+        double y = sightStr[2].toDouble(&success);
+        if(!success)
+        {
+            file.close();
+            return false;
+        }
+        Sights.push_back(new Sight(x, y, name));
+    }
+    QString edgesCountStr = file.readLine();
+    int edgesCount = edgesCountStr.toInt(&success);
+    if(!success)
+    {
+        file.close();
+        return false;
+    }
+    for(int i=0; i<edgesCount; i++)
+    {
+        QStringList edgeStr = QString(file.readLine()).split('\t');
+        if(edgeStr.size() < 5)
+        {
+            file.close();
+            return false;
+        }
+        QString beginName = edgeStr[0];
+        QString endName = edgeStr[1];
+        int time = edgeStr[2].toInt(&success);
+        if(!success)
+        {
+            file.close();
+            return false;
+        }
+        int cost = edgeStr[3].toInt(&success);
+        if(!success)
+        {
+            file.close();
+            return false;
+        }
+        QString vehicle = edgeStr[4];
+        AddEdge(beginName, endName, time, cost, vehicle);
+    }
+    file.close();
+    return true;
+}
+void SightsMultigraph::Clear()
+{
+    Sights.clear();
+    Multigraph::Clear();
 }
